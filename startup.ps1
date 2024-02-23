@@ -119,7 +119,6 @@ function Main {
     configureAnsibleUser -username "ansible" -password "ansible"
     moveMessageBoxScript
     # wait for the task to be created
-    Sleep 5
     Restart-Computer -Force
 }
 
