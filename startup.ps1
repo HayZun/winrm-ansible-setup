@@ -126,8 +126,12 @@ function Main {
     }
     enablePing
     configureAnsibleUser
-    Restart-Computer -Force -Wait -For WinRM -Timeout 300
-    displayMessage "L'ordinateur est prêt à être utilisé. L'adresse IP est : $(retrieveIp)" "Configuration terminée"
+    $ip = retrieveIp
+    $message = "L'ordinateur est prêt à être utilisé. L'adresse IP est $ip"
+    $message | Out-File -FilePath "C:\ansible\message.txt"
+    addStartupTask "[System.Windows.Forms.MessageBox]::Show((Get-Content C:\ansible\message.txt), 'Message', 'OK', 'Information')"
+    Restart-Computer -Force
+    #Ecrire dans un fichier le message
 }
 
 # Appel de la fonction principale
