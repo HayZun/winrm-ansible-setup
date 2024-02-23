@@ -60,13 +60,8 @@ function autoLogin {
 
     # Étape 4 : Définition du domaine par défaut
     New-ItemProperty -Path $RegPath -Name $DefaultDomainName -Value "localhost" -PropertyType String -Force | Out-Null
-
-    #Attends que les autres opérations soient terminées avant de redémarrer
-    Start-Sleep -Seconds 10
-
-    # Étape 4 : Redémarrage de l'ordinateur
-    Restart-Computer
 }
+    
 
 #Configurer WinRM pour autoriser les connexions distantes
 function configureWinRM {
@@ -131,6 +126,7 @@ function Main {
     }
     enablePing
     configureAnsibleUser
+    Restart-Computer -Force -Wait -For WinRM -Timeout 300
     displayMessage "L'ordinateur est prêt à être utilisé. L'adresse IP est : $(retrieveIp)" "Configuration terminée"
 }
 
