@@ -116,20 +116,28 @@ function addStartupTask {
 
 # Déplacer le script messagebox.ps1 dans le dossier C:\ansible
 function moveMessageBoxScript {
-    $currentDirectory = $PWD.Path
-    Move-Item -Path "$currentDirectory\messagebox.ps1" -Destination "C:\ansible\messagebox.ps1" -Force
+    $directoryInstall = "$env:USERPROFILE\Desktop\winrm-ansible-setup\winrm-ansible-setup-main"
+    Move-Item -Path "$directoryInstall\messagebox.ps1" -Destination "C:\ansible\messagebox.ps1" -Force
 }
 
 # Définition de la fonction principale
 function Main {
     setExecutionPolicy
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     createAnsibleFolder
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     autoLogin
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     configureWinRM
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     enablePing
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     configureAnsibleUser -username "ansible" -password "ansible"
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     createMessageTxt
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     moveMessageBoxScript
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     createTaskMessageBox
     Restart-Computer -Force
 }
