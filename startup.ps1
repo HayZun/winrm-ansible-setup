@@ -85,22 +85,6 @@ function createMessageTxt {
     $message | Out-File -FilePath "C:\ansible\message.txt" -Force
 }
 
-# 
-function createTaskMessageBox {
-    # Création du script pour afficher une boîte de dialogue
-    $script = @"
-param (
-    [string]$$FilePath
-)
-
-Add-Type -AssemblyName System.Windows.Forms
-[System.Windows.Forms.MessageBox]::Show((Get-Content $$FilePath), 'Message', 'OK', 'Information')
-"@
-    $script | Out-File -FilePath "C:\ansible\messagebox.ps1" -Force
-    # création de la tâche pour afficher la boîte de dialogue
-    addStartupTask -command "C:\ansible\messagebox.ps1 -FilePath 'C:\ansible\message.txt"
-}
-
 # Ajouter une tâche planifiée pour exécuter une commande au déverrouillage de la session
 function addStartupTask {
     param (
@@ -123,22 +107,14 @@ function moveMessageBoxScript {
 # Définition de la fonction principale
 function Main {
     setExecutionPolicy
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     createAnsibleFolder
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     autoLogin
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     configureWinRM
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     enablePing
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     configureAnsibleUser -username "ansible" -password "ansible"
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     createMessageTxt
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     moveMessageBoxScript
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
-    createTaskMessageBox
+    addStartupTask -command "C:\ansible\messagebox.ps1 -FilePath 'C:\ansible\message.txt'"
     Restart-Computer -Force
 }
 
