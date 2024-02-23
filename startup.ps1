@@ -91,7 +91,7 @@ function addStartupTask {
         [string]$command
     )
     $taskName = "AnsibleCanDeploy"
-    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument -command $command
+    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $command
     $trigger = New-ScheduledTaskTrigger -AtLogOn
     $triggerSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -RunLevel Highest
