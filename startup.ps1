@@ -112,11 +112,12 @@ function Main {
     createAnsibleFolder
     autoLogin
     configureWinRM
-    enablePing
+    enablePin
+    # fix mappage error
+    addStartupTask -command "C:\ansible\messagebox.ps1 C:\ansible\message.txt"
     configureAnsibleUser -username "ansible" -password "ansible"
     createMessageTxt
     moveMessageBoxScript
-    addStartupTask -command '"C:\ansible\messagebox.ps1" -FilePath "C:\ansible\message.txt"'
     # wait for the task to be created
     Sleep 15
     Restart-Computer -Force
