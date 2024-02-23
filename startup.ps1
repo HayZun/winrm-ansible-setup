@@ -119,6 +119,7 @@ function Main {
     createMessageTxt
     moveMessageBoxScript
     # wait for the task to be created
+    Sleep 5
     Restart-Computer -Force
 }
 
