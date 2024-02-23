@@ -83,7 +83,7 @@ function createMessageTxt {
     $ip = retrieveIp
     $manufacter = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer
     $model = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Model
-    $message = "Bonjour, votre ordinateur est prêt à être configuré pour Ansible. Voici les informations nécessaires pour la configuration :`n`nAdresse IP : $ip`nFabricant : $manufacter`nModèle : $model`n`nCordialement,`nL'équipe IT"
+    $message = "Informations necessaires pour la configuration :`n`nAdresse IP : $ip`nFabricant : $manufacter`nModèle : $model`n`n"
     $message | Out-File -FilePath "C:\ansible\message.txt" -Force -Encoding utf8
 }
 
