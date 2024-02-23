@@ -69,8 +69,8 @@ function CreateMessageTxt {
 Informations nécessaires pour la configuration de WinRM :
 Adresse IP : $ip
 Fabricant : $manufacturer
-Modèle : $model
-La configuration de WinRM est terminée. Vous pouvez maintenant administrer cet hôte à distance à l'aide d'Ansible.
+Modele : $model
+La configuration de WinRM est terminee. Vous pouvez maintenant administrer cet hote a distance avec Ansible.
 "@
     $message | Out-File -FilePath "C:\ansible\message.txt" -Force -Encoding utf8
 }
