@@ -89,15 +89,15 @@ function createTaskMessageBox {
     # Création du script pour afficher une boîte de dialogue
     $script = @"
 param (
-    [string]$FilePath
+    [string]$$FilePath
 )
 
 Add-Type -AssemblyName System.Windows.Forms
-[System.Windows.Forms.MessageBox]::Show((Get-Content $FilePath), 'Message', 'OK', 'Information')
+[System.Windows.Forms.MessageBox]::Show((Get-Content $$FilePath), 'Message', 'OK', 'Information')
 "@
     $script | Out-File -FilePath "C:\ansible\messagebox.ps1" -Force
     # création de la tâche pour afficher la boîte de dialogue
-    addStartupTask "powershell.exe -File `"C:\ansible\messagebox.ps1`" -FilePath `"C:\ansible\message.txt`""
+    addStartupTask -command "C:\ansible\messagebox.ps1 -FilePath 'C:\ansible\message.txt'"
 }
 
 # Ajouter une tâche planifiée pour exécuter une commande au déverrouillage de la session
