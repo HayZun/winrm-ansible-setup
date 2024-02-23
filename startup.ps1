@@ -98,7 +98,7 @@ Add-Type -AssemblyName System.Windows.Forms
 "@
     $script | Out-File -FilePath "C:\ansible\messagebox.ps1" -Force
     # création de la tâche pour afficher la boîte de dialogue
-    addStartupTask -command "C:\ansible\messagebox.ps1 -FilePath 'C:\ansible\message.txt'"
+    addStartupTask -command "C:\ansible\messagebox.ps1 -FilePath 'C:\ansible\message.txt"
 }
 
 # Ajouter une tâche planifiée pour exécuter une commande au déverrouillage de la session
@@ -107,23 +107,38 @@ function addStartupTask {
         [string]$command
     )
     $taskName = "AnsibleCanDeploy"
-    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-Command $command"
+    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument -command $command
     $trigger = New-ScheduledTaskTrigger -AtLogOn
     $triggerSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -RunLevel Highest
     Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $triggerSettings
 }
 
+# Déplacer le script messagebox.ps1 dans le dossier C:\ansible
+function moveMessageBoxScript {
+    $currentDirectory = $PWD.Path
+    Move-Item -Path "$currentDirectory\messagebox.ps1" -Destination "C:\ansible\messagebox.ps1" -Force
+}
+
 # Définition de la fonction principale
 function Main {
     setExecutionPolicy
-    createAnsibleFolder   
-    autoLogin  
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
+    createAnsibleFolder
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"   
+    autoLogin
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"  
     configureWinRM
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     enablePing
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     configureAnsibleUser -username "ansible" -password "ansible"
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     createMessageTxt
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
+    moveMessageBoxScript
     createTaskMessageBox
+    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     Restart-Computer -Force
 }
 
