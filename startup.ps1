@@ -55,7 +55,7 @@ function configureWinRM {
     winrm set winrm/config/client/auth '@{Basic="true"}'
     winrm set winrm/config/service/auth '@{Basic="true"}'
     # Autoriser le trafic entrant sur le port 5986
-    netsh advfirewall firewall add rule Profile=Domain name="Autoriser WinRM HTTPS" dir=in localport=5986 protocol=TCP action=allow
+    netsh advfirewall firewall add rule Profile=Domain name="Autoriser WinRM HTTPS" dir=in localport=5985 protocol=TCP action=allow
 
 }
 
@@ -81,7 +81,9 @@ function retrieveIp {
 # Création du fichier message.txt
 function createMessageTxt {
     $ip = retrieveIp
-    $message = "L'adresse IP de la machine est : $ip"
+    $manufacter = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer
+    $model = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Model
+    $message = "Bonjour, votre ordinateur est prêt à être configuré pour Ansible. Voici les informations nécessaires pour la configuration :`n`nAdresse IP : $ip`nFabricant : $manufacter`nModèle : $model`n`nCordialement,`nL'équipe IT"
     $message | Out-File -FilePath "C:\ansible\message.txt" -Force
 }
 
