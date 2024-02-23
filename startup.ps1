@@ -110,8 +110,8 @@ function addStartupTask {
 # Définition de la fonction principale
 function Main {
     setExecutionPolicy
-    createAnsibleFolder
-    autoLogin
+    createAnsibleFolder   
+    autoLogin  
     configureWinRM
     enablePing
     configureAnsibleUser -username "ansible" -password "ansible"
