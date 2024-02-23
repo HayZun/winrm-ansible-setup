@@ -108,15 +108,15 @@ function moveMessageBoxScript {
 
 # Définition de la fonction principale
 function Main {
-    setExecutionPolicy
     createAnsibleFolder
+    createMessageTxt
+    setExecutionPolicy
     autoLogin
     configureWinRM
     enablePing
     # fix mappage error
     addStartupTask -Argument "C:\ansible\message.txt"
     configureAnsibleUser -username "ansible" -password "ansible"
-    createMessageTxt
     moveMessageBoxScript
     # wait for the task to be created
     Sleep 5
