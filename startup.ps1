@@ -78,10 +78,18 @@ function retrieveIp {
     return $ip.IPAddress
 }
 
-# Création du fichier message.txt
+# Création du fichier message.txt avec un message d'achèvement et l'adresse IP
 function createMessageTxt {
     $ip = retrieveIp
-    $message = "L'adresse IP de la machine est : $ip"
+    $message = @"
+Configuration terminée avec succès !
+
+Adresse IP de l'ordinateur : $ip
+
+La machine est prête à être utilisée avec Ansible.
+
+Merci d'utiliser Ansible pour la suite de la configuration.
+"@
     $message | Out-File -FilePath "C:\ansible\message.txt" -Force
 }
 
@@ -91,7 +99,7 @@ function addStartupTask {
         [string]$command
     )
     $taskName = "AnsibleCanDeploy"
-    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $command
+    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $command -WindowStyle Hidden
     $trigger = New-ScheduledTaskTrigger -AtLogOn
     $triggerSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -RunLevel Highest
