@@ -49,6 +49,8 @@ function autoLogin {
 
 #Configurer WinRM pour autoriser les connexions distantes
 function configureWinRM {
+    # Definir le profil de connexion sur privé
+    Get-NetAdapter | Where-Object { $_.Status -eq "Up" } | Set-NetConnectionProfile -NetworkCategory Private
     Enable-PSRemoting -Force
     Set-Item WSMan:\localhost\Client\TrustedHosts -Value * -Force
     Restart-Service WinRM
