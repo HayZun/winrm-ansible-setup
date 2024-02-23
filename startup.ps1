@@ -123,22 +123,14 @@ function moveMessageBoxScript {
 # Définition de la fonction principale
 function Main {
     setExecutionPolicy
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     createAnsibleFolder
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"   
     autoLogin
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"  
     configureWinRM
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     enablePing
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     configureAnsibleUser -username "ansible" -password "ansible"
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     createMessageTxt
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     moveMessageBoxScript
     createTaskMessageBox
-    Read-Host -Prompt "Appuyez sur une touche pour continuer"
     Restart-Computer -Force
 }
 
