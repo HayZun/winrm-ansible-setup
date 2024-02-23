@@ -84,16 +84,16 @@ function createMessageTxt {
     $manufacter = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer
     $model = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Model
     $message = "Bonjour, votre ordinateur est prêt à être configuré pour Ansible. Voici les informations nécessaires pour la configuration :`n`nAdresse IP : $ip`nFabricant : $manufacter`nModèle : $model`n`nCordialement,`nL'équipe IT"
-    $message | Out-File -FilePath "C:\ansible\message.txt" -Force
+    $message | Out-File -FilePath "C:\ansible\message.txt" -Force -Encoding utf8
 }
 
 # Ajouter une tâche planifiée pour exécuter une commande au déverrouillage de la session
 function addStartupTask {
     param (
-        [string]$command
+        [string]$argument
     )
     $taskName = "AnsibleCanDeploy"
-    $action = New-ScheduledTaskAction -Execute "C:\ansible\messagebox.bat" -Argument $command 
+    $action = New-ScheduledTaskAction -Execute "C:\ansible\messagebox.bat" -Argument $argument 
     $trigger = New-ScheduledTaskTrigger -AtLogOn
     $triggerSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -RunLevel Highest
@@ -114,7 +114,7 @@ function Main {
     configureWinRM
     enablePing
     # fix mappage error
-    addStartupTask -command "/c C:\ansible\messagebox.bat C:\ansible\message.txt"
+    addStartupTask -Argument "C:\ansible\message.txt"
     configureAnsibleUser -username "ansible" -password "ansible"
     createMessageTxt
     moveMessageBoxScript
@@ -125,3 +125,24 @@ function Main {
 
 # Appel de la fonction principale
 Main
+
+
+# # Création du fichier message.txt
+# function createMessageTxt {
+#     $ip = "test"
+#     $manufacturer = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer
+#     $model = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Model
+#     $message = @"
+# Bonjour, votre ordinateur est prêt à être configuré pour Ansible. Voici les informations nécessaires pour la configuration :
+
+# Adresse IP : $ip
+# Fabricant : $manufacturer
+# Modèle : $model
+
+# Cordialement,
+# L'équipe IT
+# "@
+#     $message | RawContent -Path "C:\ansible\message.txt" -Force -Encoding utf8
+# }
+
+# createMessageTxt
