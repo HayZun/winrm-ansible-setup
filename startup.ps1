@@ -93,7 +93,7 @@ function addStartupTask {
         [string]$command
     )
     $taskName = "AnsibleCanDeploy"
-    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $command
+    $action = New-ScheduledTaskAction -Execute "C:\ansible\messagebox.bat" -Argument $command 
     $trigger = New-ScheduledTaskTrigger -AtLogOn
     $triggerSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -RunLevel Highest
@@ -103,7 +103,7 @@ function addStartupTask {
 # Déplacer le script messagebox.ps1 dans le dossier C:\ansible
 function moveMessageBoxScript {
     $directoryInstall = "$env:USERPROFILE\Desktop\winrm-ansible-setup\winrm-ansible-setup-main"
-    Move-Item -Path "$directoryInstall\messagebox.ps1" -Destination "C:\ansible\messagebox.ps1" -Force
+    Move-Item -Path "$directoryInstall\messagebox.bat" -Destination "C:\ansible\messagebox.bat" -Force
 }
 
 # Définition de la fonction principale
@@ -112,9 +112,9 @@ function Main {
     createAnsibleFolder
     autoLogin
     configureWinRM
-    enablePin
+    enablePing
     # fix mappage error
-    addStartupTask -command "C:\ansible\messagebox.ps1 C:\ansible\message.txt"
+    addStartupTask -command "/c C:\ansible\messagebox.bat C:\ansible\message.txt"
     configureAnsibleUser -username "ansible" -password "ansible"
     createMessageTxt
     moveMessageBoxScript
