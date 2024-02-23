@@ -101,17 +101,16 @@ function retrieveIp {
     return $ip.IPAddress
 }
 
-# Ajouter une tâche planifiée pour exécuter une commande au démarrage de la session
+# Ajouter une tâche planifiée pour exécuter une commande au déverrouillage de la session
 function addStartupTask {
     param (
         [string]$command
     )
     $taskName = "StartupTask"
-    $trigger = New-ScheduledTaskTrigger -AtStartup
+    $trigger = New-ScheduledTaskTrigger -AtLogon -Once
     $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-Command $command"
     Register-ScheduledTask -TaskName $taskName -Trigger $trigger -Action $action -RunLevel Highest
 }
-
 
 # Définition de la fonction principale
 function Main {
