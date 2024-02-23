@@ -36,7 +36,7 @@ function configureAnsibleUser {
         [string]$username,
         [string]$password
     )
-    Rename-LocalUser -Name "HayZun" -NewName "ansible"
+    Rename-LocalUser -Name "$env:UserName" -NewName "ansible"
     Set-LocalUser -Name "ansible" -Password (ConvertTo-SecureString "ansible" -AsPlainText -Force)
 }
 
