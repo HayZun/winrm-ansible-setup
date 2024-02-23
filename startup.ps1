@@ -78,6 +78,13 @@ function retrieveIp {
     return $ip.IPAddress
 }
 
+# Création du fichier message.txt
+function createMessageTxt {
+    $ip = retrieveIp
+    $message = "L'adresse IP de la machine est : $ip"
+    $message | Out-File -FilePath "C:\ansible\message.txt" -Force
+}
+
 # 
 function createTaskMessageBox {
     # Création du script pour afficher une boîte de dialogue
@@ -115,6 +122,7 @@ function Main {
     configureWinRM
     enablePing
     configureAnsibleUser -username "ansible" -password "ansible"
+    createMessageTxt
     createTaskMessageBox
     Restart-Computer -Force
 }
