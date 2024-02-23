@@ -78,32 +78,11 @@ function retrieveIp {
     return $ip.IPAddress
 }
 
-# Création du fichier message.txt avec un message d'achèvement et l'adresse IP
+# Création du fichier message.txt
 function createMessageTxt {
     $ip = retrieveIp
-    $message = @"
-Configuration terminée avec succès !
-
-Adresse IP de l'ordinateur : $ip
-
-La machine est prête à être utilisée avec Ansible.
-
-Merci d'utiliser Ansible pour la suite de la configuration.
-"@
+    $message = "L'adresse IP de la machine est : $ip"
     $message | Out-File -FilePath "C:\ansible\message.txt" -Force
-}
-
-# Ajouter une tâche planifiée pour exécuter une commande au déverrouillage de la session
-function addStartupTask {
-    param (
-        [string]$command
-    )
-    $taskName = "AnsibleCanDeploy"
-    $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $command -WindowStyle Hidden
-    $trigger = New-ScheduledTaskTrigger -AtLogOn
-    $triggerSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-    $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -RunLevel Highest
-    Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $triggerSettings
 }
 
 # Déplacer le script messagebox.ps1 dans le dossier C:\ansible
