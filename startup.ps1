@@ -18,16 +18,6 @@ function setExecutionPolicy {
     Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
 }
 
-
-# vérifier que l'utisateur n'existe pas
-function User-Exists {
-    param (
-        [string]$username
-    )
-    $user = Get-LocalUser -Name $username -ErrorAction SilentlyContinue
-    return $user -ne $null
-}
-
 # modifier le nom de l'utilisateur et son mdp
 # TODO en fonction de la langue du système, le groupe Administrateurs peut être Administrators (à vérifier)
 # renommer le dossier de l'utilisateur en ansible
@@ -37,7 +27,7 @@ function configureAnsibleUser {
         [string]$password
     )
     Rename-LocalUser -Name "$env:UserName" -NewName "ansible"
-    Set-LocalUser -Name "ansible" -Password (ConvertTo-SecureString "ansible" -AsPlainText -Force)
+    Set-LocalUser -Name $username -Password (ConvertTo-SecureString $password -AsPlainText -Force)
 }
 
 # Fonction pour configurer l'auto-login
@@ -80,25 +70,34 @@ function enablePing {
     New-NetFirewallRule -DisplayName "Allow ICMPv4-In" -Protocol ICMPv4 -Direction Inbound -Action Allow -Enabled True
 }
 
-#TODO start at a scheduled task
-function displayMessage {
-    param (
-        [string]$message,
-        [string]$title
-    )
-    [System.Windows.Forms.MessageBox]::Show($message, $title, 'OK', 'Information')
-}
-
 function retrieveIp {
-    #get the ip address interface ethernet
-    $ip = Get-NetIPAddress | Where-Object { $_.InterfaceAlias -eq "Ethernet" -and $_.AddressFamily -eq "IPv4" }
+    # Get the IP address of the Ethernet interface
+    $ip = Get-NetIPAddress | Where-Object { $_.InterfaceAlias -like "Ethernet*" -and $_.AddressFamily -eq "IPv4" }
 
-    #if ip starts with 169.254, then it's a link-local address
-    if ($ip.IPAddress.StartsWith("169.254")) {
-        #get the ip address interface wifi
+    # Check if the IP is null or starts with 169.254 (link-local address)
+    if ($null -eq $ip -or $ip.IPAddress.StartsWith("169.254")) {
+        # Get the IP address of the Wi-Fi interface
         $ip = Get-NetIPAddress | Where-Object { $_.InterfaceAlias -eq "Wi-Fi" -and $_.AddressFamily -eq "IPv4" }
     }
+
+    # Return the IP address
     return $ip.IPAddress
+}
+
+# 
+function createTaskMessageBox {
+    # Création du script pour afficher une boîte de dialogue
+    $script = @"
+param (
+    [string]$FilePath
+)
+
+Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.MessageBox]::Show((Get-Content $FilePath), 'Message', 'OK', 'Information')
+"@
+    $script | Out-File -FilePath "C:\ansible\messagebox.ps1" -Force
+    # création de la tâche pour afficher la boîte de dialogue
+    addStartupTask "powershell.exe -File `"C:\ansible\messagebox.ps1`" -FilePath `"C:\ansible\message.txt`""
 }
 
 # Ajouter une tâche planifiée pour exécuter une commande au déverrouillage de la session
@@ -106,10 +105,12 @@ function addStartupTask {
     param (
         [string]$command
     )
-    $taskName = "StartupTask"
-    $trigger = New-ScheduledTaskTrigger -AtLogon -Once
+    $taskName = "AnsibleCanDeploy"
     $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-Command $command"
-    Register-ScheduledTask -TaskName $taskName -Trigger $trigger -Action $action -RunLevel Highest
+    $trigger = New-ScheduledTaskTrigger -AtLogOn
+    $triggerSettings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
+    $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -RunLevel Highest
+    Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $triggerSettings
 }
 
 # Définition de la fonction principale
@@ -118,19 +119,10 @@ function Main {
     createAnsibleFolder
     autoLogin
     configureWinRM
-    # Attendre que le service WinRM soit en cours d'exécution
-    while ((Get-Service -Name WinRM).Status -ne "Running") {
-        # Attendre 1 seconde avant de vérifier à nouveau
-        Start-Sleep -Seconds 10
-    }
     enablePing
-    configureAnsibleUser
-    $ip = retrieveIp
-    $message = "L'ordinateur est prêt à être utilisé. L'adresse IP est $ip"
-    $message | Out-File -FilePath "C:\ansible\message.txt"
-    addStartupTask "[System.Windows.Forms.MessageBox]::Show((Get-Content C:\ansible\message.txt), 'Message', 'OK', 'Information')"
+    configureAnsibleUser -username "ansible" -password "ansible"
+    createTaskMessageBox
     Restart-Computer -Force
-    #Ecrire dans un fichier le message
 }
 
 # Appel de la fonction principale
