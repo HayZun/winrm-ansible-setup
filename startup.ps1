@@ -85,7 +85,15 @@ function createMessageTxt {
     $ip = retrieveIp
     $manufacter = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer
     $model = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Model
-    $message = "Informations necessaires pour la configuration :`n`nAdresse IP : $ip`nFabricant : $manufacter`nModèle : $model`n`n"
+    $message = @"
+Informations nécessaires pour la configuration de WinRM :
+
+Adresse IP : $ip
+Fabricant : $manufacter
+Modele : $model
+
+La configuration de WinRM est terminée. Vous pouvez maintenant administrer cet hôte à distance à l'aide d'Ansible.
+"@
     $message | Out-File -FilePath "C:\ansible\message.txt" -Force -Encoding utf8
 }
 
