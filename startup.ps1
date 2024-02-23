@@ -124,24 +124,3 @@ function Main {
 
 # Appel de la fonction principale
 Main
-
-
-# # Création du fichier message.txt
-# function createMessageTxt {
-#     $ip = "test"
-#     $manufacturer = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Manufacturer
-#     $model = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty Model
-#     $message = @"
-# Bonjour, votre ordinateur est prêt à être configuré pour Ansible. Voici les informations nécessaires pour la configuration :
-
-# Adresse IP : $ip
-# Fabricant : $manufacturer
-# Modèle : $model
-
-# Cordialement,
-# L'équipe IT
-# "@
-#     $message | RawContent -Path "C:\ansible\message.txt" -Force -Encoding utf8
-# }
-
-# createMessageTxt
