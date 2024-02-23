@@ -1,9 +1,5 @@
 ﻿# Description: Script PowerShell pour créer un utilisateur ansible et configurer l'auto-login
 # Auteur: Durieux Paul
-# TODO:
-# - créer le Github Actions pour exécuter le script
-# - trouver un moyen d'exécuter le script avec une commande unique
-# - Set-executionpolicy unrestricted -force -scope CurrentUser
 
 # créer le dossier temporaire ansible dans le C:\ansible
 function createAnsibleFolder {
@@ -19,8 +15,6 @@ function setExecutionPolicy {
 }
 
 # modifier le nom de l'utilisateur et son mdp
-# TODO en fonction de la langue du système, le groupe Administrateurs peut être Administrators (à vérifier)
-# renommer le dossier de l'utilisateur en ansible
 function configureAnsibleUser {
     param(
         [string]$username,
