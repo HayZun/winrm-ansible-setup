@@ -114,6 +114,7 @@ function Main {
     configureAnsibleUser -username "ansible" -password "ansible"
     createMessageTxt
     moveMessageBoxScript
+    addStartupTask -command '"C:\ansible\messagebox.ps1" -FilePath "C:\ansible\message.txt"'
     Restart-Computer -Force
 }
 
