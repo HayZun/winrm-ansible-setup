@@ -117,6 +117,8 @@ function Main {
     createMessageTxt
     moveMessageBoxScript
     addStartupTask -command '"C:\ansible\messagebox.ps1" -FilePath "C:\ansible\message.txt"'
+    # wait for the task to be created
+    Sleep 15
     Restart-Computer -Force
 }
 
