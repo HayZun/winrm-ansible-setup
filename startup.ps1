@@ -43,7 +43,7 @@ function ConfigureWinRM {
     Restart-Service WinRM
     winrm set winrm/config/client/auth '@{Basic="true"}'
     winrm set winrm/config/service/auth '@{Basic="true"}'
-    netsh advfirewall firewall add rule Profile=Domain name="Allow WinRM HTTPS" dir=in localport=5985 protocol=TCP action=allow
+    netsh advfirewall firewall add rule Profile=Domain name="Allow WinRM HTTPS" dir=in localport=5986 protocol=TCP action=allow
 }
 
 # Fonction pour autoriser le ping
